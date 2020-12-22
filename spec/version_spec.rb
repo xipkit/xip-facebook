@@ -2,15 +2,15 @@
 
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
-describe "Stealth::Services::Facebook::Version" do
+describe "Xip::Services::Facebook::Version" do
 
   let(:version_in_file) { File.read(File.join(File.dirname(__FILE__), '..', 'VERSION')).strip }
 
   it "should return the current gem version" do
-    expect(Stealth::Services::Facebook::Version.version).to eq version_in_file
+    expect(Xip::Services::Facebook::Version.version).to eq version_in_file
   end
 
   it "should return the current gem version via a constant" do
-    expect(Stealth::Services::Facebook::VERSION).to eq version_in_file
+    expect(Xip::Services::Facebook::VERSION).to eq version_in_file
   end
 end

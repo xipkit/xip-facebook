@@ -1,9 +1,8 @@
-# coding: utf-8
 # frozen_string_literal: true
 
-require 'stealth/services/facebook/client'
+require 'xip/services/facebook/client'
 
-module Stealth
+module Xip
   module Services
     module Facebook
 
@@ -11,9 +10,9 @@ module Stealth
 
         class << self
           def trigger
-            reply_handler = Stealth::Services::Facebook::ReplyHandler.new
+            reply_handler = Xip::Services::Facebook::ReplyHandler.new
             reply = reply_handler.messenger_profile
-            client = Stealth::Services::Facebook::Client.new(reply: reply, endpoint: 'messenger_profile')
+            client = Xip::Services::Facebook::Client.new(reply: reply, endpoint: 'messenger_profile')
             client.transmit
           end
         end

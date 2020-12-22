@@ -1,11 +1,10 @@
-# coding: utf-8
 # frozen_string_literal: true
 
-module Stealth
+module Xip
   module Services
     module Facebook
 
-      class ReplyHandler < Stealth::Services::BaseReplyHandler
+      class ReplyHandler < Xip::Services::BaseReplyHandler
 
         attr_reader :recipient_id, :reply
 
@@ -178,12 +177,12 @@ module Stealth
 
         # generates property/value pairs required to set the profile
         def messenger_profile
-          unless Stealth.config.facebook.setup.present?
-            raise Stealth::Errors::ConfigurationError, "Setup for Facebook is not specified in services.yml."
+          unless Xip.config.facebook.setup.present?
+            raise Xip::Errors::ConfigurationError, "Setup for Facebook is not specified in services.yml."
           end
 
           profile = {}
-          Stealth.config.facebook.setup.each do |profile_option, _|
+          Xip.config.facebook.setup.each do |profile_option, _|
             profile[profile_option] = self.send(profile_option)
           end
 
@@ -446,7 +445,7 @@ module Stealth
                 }
 
               else
-                raise(Stealth::Errors::ServiceImpaired, "Sorry, we don't yet support #{button["type"]} buttons yet!")
+                raise(Xip::Errors::ServiceImpaired, "Sorry, we don't yet support #{button["type"]} buttons yet!")
               end
 
               _button
@@ -475,7 +474,7 @@ module Stealth
           end
 
           def greeting
-            Stealth.config.facebook.setup.greeting.map do |greeting|
+            Xip.config.facebook.setup.greeting.map do |greeting|
               {
                 "locale" => greeting["locale"],
                 "text" => greeting["text"]
@@ -484,7 +483,7 @@ module Stealth
           end
 
           def persistent_menu
-            Stealth.config.facebook.setup.persistent_menu.map do |persistent_menu|
+            Xip.config.facebook.setup.persistent_menu.map do |persistent_menu|
               {
                 "locale" => persistent_menu['locale'],
                 "composer_input_disabled" => (persistent_menu['composer_input_disabled'] || false),
@@ -494,7 +493,7 @@ module Stealth
           end
 
           def get_started
-            Stealth.config.facebook.setup.get_started
+            Xip.config.facebook.setup.get_started
           end
       end
 

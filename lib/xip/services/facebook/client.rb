@@ -1,16 +1,15 @@
-# coding: utf-8
 # frozen_string_literal: true
 
 require 'http'
 
-require 'stealth/services/facebook/message_handler'
-require 'stealth/services/facebook/reply_handler'
-require 'stealth/services/facebook/setup'
+require 'xip/services/facebook/message_handler'
+require 'xip/services/facebook/reply_handler'
+require 'xip/services/facebook/setup'
 
-module Stealth
+module Xip
   module Services
     module Facebook
-      class Client < Stealth::Services::BaseClient
+      class Client < Xip::Services::BaseClient
 
         FB_ENDPOINT = if ENV['FACEBOOK_API_VERSION'].present?
           "https://graph.facebook.com/v#{ENV['FACEBOOK_API_VERSION']}/me"
@@ -22,7 +21,7 @@ module Stealth
 
         def initialize(reply:, endpoint: 'messages')
           @reply = reply
-          access_token = "access_token=#{Stealth.config.facebook.page_access_token}"
+          access_token = "access_token=#{Xip.config.facebook.page_access_token}"
           @api_endpoint = [[FB_ENDPOINT, endpoint].join('/'), access_token].join('?')
         end
 
@@ -36,15 +35,15 @@ module Stealth
             # Messenger error sub-codes (https://developers.facebook.com/docs/messenger-platform/reference/send-api/error-codes)
             case res.body
             when /1545041/
-              raise Stealth::Errors::UserOptOut
+              raise Xip::Errors::UserOptOut
             when /2018108/
-              raise Stealth::Errors::UserOptOut
+              raise Xip::Errors::UserOptOut
             when /2018028/
-              raise Stealth::Errors::InvalidSessionID.new('Cannot message users who are not admins, developers or testers of the app until pages_messaging permission is reviewed and the app is live.')
+              raise Xip::Errors::InvalidSessionID.new('Cannot message users who are not admins, developers or testers of the app until pages_messaging permission is reviewed and the app is live.')
             end
           end
 
-          Stealth::Logger.l(
+          Xip::Logger.l(
             topic: "facebook",
             message: "Transmitted. Response: #{res.status.code}: #{res.body}"
           )
@@ -64,7 +63,7 @@ module Stealth
 
           query_hash = {
             fields: fields.join(','),
-            access_token: Stealth.config.facebook.page_access_token
+            access_token: Xip.config.facebook.page_access_token
           }
 
           uri = URI::HTTPS.build(
@@ -74,7 +73,7 @@ module Stealth
           )
 
           res = http_client.get(uri.to_s)
-          Stealth::Logger.l(topic:
+          Xip::Logger.l(topic:
             'facebook',
             message: "Requested user profile for #{recipient_id}. Response: #{res.status.code}: #{res.body}"
           )
@@ -83,7 +82,7 @@ module Stealth
             MultiJson.load(res.body.to_s)
           else
             raise(
-              Stealth::Errors::ServiceError,
+              Xip::Errors::ServiceError,
               "Facebook error #{res.status}: #{res.body}"
             )
           end
@@ -104,16 +103,16 @@ module Stealth
             application_tracking_enabled: 1,
             extinfo: MultiJson.dump(['mb1']),
             page_scoped_user_id: recipient_id,
-            page_id: Stealth.config.facebook.page_id
+            page_id: Xip.config.facebook.page_id
           }
 
           uri = URI::HTTPS.build(
             host: "graph.facebook.com",
-            path: "/#{Stealth.config.facebook.app_id}/activities"
+            path: "/#{Xip.config.facebook.app_id}/activities"
           )
 
           res = http_client.post(uri.to_s, body: MultiJson.dump(params))
-          Stealth::Logger.l(
+          Xip::Logger.l(
             topic: "facebook",
             message: "Sent custom event for metric: #{metric} and value: #{value}. Response: #{res.status}: #{res.body}"
           )
@@ -122,7 +121,7 @@ module Stealth
             MultiJson.load(res.body.to_s)
           else
             raise(
-              Stealth::Errors::ServiceError,
+              Xip::Errors::ServiceError,
               "Facebook error #{res.status}: #{res.body}"
             )
           end

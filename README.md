@@ -1,8 +1,8 @@
-# Stealth Facebook
+# Facebook Messenger Xip Kit Component
 
-This integration adds support for Facebook bots within [Stealth](https://github.com/hellostealth/stealth).
+The [Xip Kit](https://github.com/xipkit/xip) Facebook Messenger component adds the ability to connect your bot to the Facebook Messenger platform.
 
-[![Gem Version](https://badge.fury.io/rb/stealth-facebook.svg)](https://badge.fury.io/rb/stealth-facebook)
+[![Gem Version](https://badge.fury.io/rb/xip-facebook.svg)](https://badge.fury.io/rb/xip-facebook)
 
 ## Configure Your Facebook Page
 
@@ -85,7 +85,7 @@ test:
   <<: *default
 ```
 
-As with all Stealth integrations, integrations can be specified by environment. You'll want to replace `FACEBOOK_VERIFY_TOKEN` and `FACEBOOK_ACCESS_TOKEN` with your respective keys from your Facebook page.
+As with all Xip components, components can be specified by environment. You'll want to replace `FACEBOOK_VERIFY_TOKEN` and `FACEBOOK_ACCESS_TOKEN` with your respective keys from your Facebook page.
 
 You may also specify a Facebook Graph API version by setting the ENV var `FACEBOOK_API_VERSION` to API version your bot has been cofnigured to use. If none is specified, this driver will currently default to version `3.2`.
 
@@ -113,17 +113,17 @@ In addition to the `payload` type, the persistent menu supports `url` and `call`
 Each time you make a change to the persistent menu, you will have to upload the change to Facebook. This integration provides a command line task to automate this:
 
 ```
-stealth setup facebook
+xip setup facebook
 ```
 
 ### Profile Data
 
 By default, your Facebook bots may retrieve the `id`, `name`, `first_name`, `last_name`, and `profile_pic` fields for users that have made this information public and have opted-in to your bot. More info [here](https://developers.facebook.com/docs/messenger-platform/identity/user-profile).
 
-To fetch a user's profile with `stealth-facebook` you can call the following:
+To fetch a user's profile with `xip-facebook` you can call the following:
 
 ```ruby
-fb_profile = Stealth::Services::Facebook::Client.fetch_profile(
+fb_profile = Xip::Services::Facebook::Client.fetch_profile(
   recipient_id: current_user_id
 )
 ```
@@ -143,7 +143,7 @@ fb_profile = Stealth::Services::Facebook::Client.fetch_profile(
 If your bot has permission to retrieve additional fields, you can specify them as an array of symbols via the `fields` argument:
 
 ```ruby
-fb_profile = Stealth::Services::Facebook::Client.fetch_profile(
+fb_profile = Xip::Services::Facebook::Client.fetch_profile(
   recipient_id: current_user_id,
   fields: [:id, :name, :first_name, :last_name, :profile_pic, :gender, :locale]
 )
@@ -168,13 +168,13 @@ default: &default
 Then to collect a metric:
 
 ```ruby
-Stealth::Services::Facebook::Client.track(recipient_id: u.recipient_id, metric: 'name of your metric', value: 2)
+Xip::Services::Facebook::Client.track(recipient_id: u.recipient_id, metric: 'name of your metric', value: 2)
 ```
 
 You can specify additional options:
 
 ```ruby
-Stealth::Services::Facebook::Client.track(recipient_id: u.recipient_id, metric: 'signup', value: 2, options: { 'fb_description' => 'A signup occured.' })
+Xip::Services::Facebook::Client.track(recipient_id: u.recipient_id, metric: 'signup', value: 2, options: { 'fb_description' => 'A signup occured.' })
 ```
 
 More info about events, such as which options are available, can be found on [Facebook's Events API docs](https://developers.facebook.com/docs/marketing-api/app-event-api) page.
@@ -381,7 +381,7 @@ More info about Facebook cards [here](https://developers.facebook.com/docs/messe
 
 A Facebook list is useful for displaying things like a news feed. You can find more info about Facebook lists [here](https://developers.facebook.com/docs/messenger-platform/send-messages/template/list).
 
-To generate a list via Stealth Facebook:
+To generate a list with this component:
 
 ```yaml
 - reply_type: list

@@ -1,16 +1,15 @@
-# coding: utf-8
 # frozen_string_literal: true
 
-require 'stealth/services/facebook/events/message_event'
-require 'stealth/services/facebook/events/postback_event'
-require 'stealth/services/facebook/events/message_reads_event'
-require 'stealth/services/facebook/events/messaging_referral_event'
+require 'xip/services/facebook/events/message_event'
+require 'xip/services/facebook/events/postback_event'
+require 'xip/services/facebook/events/message_reads_event'
+require 'xip/services/facebook/events/messaging_referral_event'
 
-module Stealth
+module Xip
   module Services
     module Facebook
 
-      class MessageHandler < Stealth::Services::BaseMessageHandler
+      class MessageHandler < Xip::Services::BaseMessageHandler
 
         attr_reader :service_message, :params, :headers, :facebook_message
 
@@ -25,7 +24,7 @@ module Stealth
           else
             # Queue the request processing so we can respond quickly to FB
             # and also keep track of this message
-            Stealth::Services::HandleMessageJob.perform_async(
+            Xip::Services::HandleMessageJob.perform_async(
               'facebook',
               params,
               headers
@@ -54,7 +53,7 @@ module Stealth
           end
 
           def respond_with_validation
-            if params['hub.verify_token'] == Stealth.config.facebook.verify_token
+            if params['hub.verify_token'] == Xip.config.facebook.verify_token
               [200, params['hub.challenge']]
             else
               [401, "Verify token did not match environment variable."]
@@ -75,22 +74,22 @@ module Stealth
 
           def process_facebook_event
             if facebook_message['message'].present?
-              message_event = Stealth::Services::Facebook::MessageEvent.new(
+              message_event = Xip::Services::Facebook::MessageEvent.new(
                 service_message: service_message,
                 params: facebook_message
               )
             elsif facebook_message['postback'].present?
-              message_event = Stealth::Services::Facebook::PostbackEvent.new(
+              message_event = Xip::Services::Facebook::PostbackEvent.new(
                 service_message: service_message,
                 params: facebook_message
               )
             elsif facebook_message['read'].present?
-              message_event = Stealth::Services::Facebook::MessageReadsEvent.new(
+              message_event = Xip::Services::Facebook::MessageReadsEvent.new(
                 service_message: service_message,
                 params: facebook_message
               )
             elsif facebook_message['referral'].present?
-              message_event = Stealth::Services::Facebook::MessagingReferralEvent.new(
+              message_event = Xip::Services::Facebook::MessagingReferralEvent.new(
                 service_message: service_message,
                 params: facebook_message
               )
