@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.email = 'mauricio@edge14.com'
 
   s.add_dependency 'xip', '~> 2.0.0.beta'
-  s.add_dependency 'http', '~> 4.4'
+  s.add_dependency 'http', '>= 4.4', '< 6.0'
 
   s.add_development_dependency 'rspec_junit_formatter', '~> 0.3'
   s.add_development_dependency 'rack-test', '~> 1.1'
